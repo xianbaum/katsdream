@@ -1,7 +1,6 @@
 package com.christianbaum.games.katsdream;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,7 +26,6 @@ public class Bomb extends Enemy {
 	
 	@Override
 	public void update( float dt, KatsDream world, ArrayList<Actor> actors_to_add) {
-		boolean inactive = false;
 		if( state != State.INACTIVE ) {
 			anim_timer+=dt;
 			beep_timer += dt;

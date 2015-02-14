@@ -199,7 +199,7 @@ public class KatsDream extends ApplicationAdapter {
 					5*cam_height/tiles_per_cam_height,
 					16*cam_width/tiles_per_cam_width,
 					8*cam_height/tiles_per_cam_height);
-			font.draw( batch, "Touch to begin!\nv1.10", cam_width/tiles_per_cam_width*6f,
+			font.draw( batch, "Touch to begin!\nv1.1.0", cam_width/tiles_per_cam_width*6f,
 					cam_height/tiles_per_cam_height*3);
 			batch.end();
 		}
