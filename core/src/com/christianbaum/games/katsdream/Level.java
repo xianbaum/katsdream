@@ -12,13 +12,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /** The Level class two maps, randomly chosen.
- * 
  * @author Christian
- *
  */
 public class Level {
-	private static final int LEVEL_HEIGHT = 15;
-	/** Two TiledMaps that are randomly chosen */
 	private TiledMap[] map = new TiledMap[2];
 	/** Two OrthogonalTiledMapRenderers for each map */
 	private OrthogonalTiledMapRenderer[] renderer
@@ -38,8 +34,9 @@ public class Level {
 	/** The left map alternates. This byte keeps track of which map is left. */
 	private byte left_map;
 	
-	/**
-	 * Constructor. Sets up a level
+	/** Constructor. Sets up a level
+	 * @param The amount of tiles displayed on the screen at once (X value)
+	 * @param The amount of tiles displayed on the screen at once (Y value)
 	 */
 	Level( int tiles_per_cam_width , int tiles_per_cam_height ) {
 		total_scroll = 0;
@@ -55,10 +52,7 @@ public class Level {
 					tiles_per_cam_height ); }
 	}
 	
-	//Private methods
-	
 	/** Gets the left map.
-	 * 
 	 * @return Level.left_map
 	 */
 	private byte l() {
@@ -66,20 +60,16 @@ public class Level {
 	}
 	
 	/** Gets the right map
-	 * 
 	 * @return The opposite of Level.left_map
 	 */
 	private byte r() {
-		//Condition gets the oppposite of left map
 		return (left_map == 0 ) ? (byte) 1 : 0;
 	}
 	
-	/**
-	 * Scrolls the camera from the speed
-	 * @param scroll_speed The speed of which to scroll
+	/** Updates the camera's x position
+	 * @param The amount of tiles per at once
 	 */
-	private void scrollCam( int tiles_per_cam_width) {
-		//scroll camera
+	private void scrollCam( int tiles_per_cam_width ) {
 		camera[l()].position.x = left_map_scroll + tiles_per_cam_width/2;
 		camera[l()].update();
 		camera[r()].position.x = left_map_scroll - left_map_width 
@@ -88,7 +78,6 @@ public class Level {
 	}
 	
 	/** Loads a map.
-	 * 
 	 * @param map_no The left or right map to load to
 	 * @param level The level to load
 	 */
@@ -109,10 +98,7 @@ public class Level {
        		}
 	}
 
-	//Public methods
-	
 	/** Gets the total scroll amount
-	 * 
 	 * @return Level.total_scroll, the total scroll amount
 	 */
 	public float total_scroll() {
@@ -120,17 +106,19 @@ public class Level {
 	}
 	
 	/** Gets the total amount of maps scrolled.
-	 * 
 	 * @return Level.total_maps, the total amount of maps loaded
 	 */
 	public int total_maps() {
+		check( 1 );
+
 		return total_maps;
 	}
 	
-	/** 
-	 * Checks if the next map should be loaded or not.
+	/** Checks if the next map should be loaded or not.
 	 * Loads a new map if it should.
 	 * Only needs to be called when scrolled.
+	 * @param tiles_per_cam_width The amount of tiles displayed on the screen at once (X)
+	 * 
 	 * @return true if a new map is loaded; false if not.
 	 */
 	private int check(int tiles_per_cam_width) {
@@ -145,6 +133,7 @@ public class Level {
 				_load(r(), random_map );
 			int left_map_width_return = left_map_width;
 	        left_map_scroll -= left_map_width;
+	        System.out.println("LMS:"+left_map_scroll);
 			left_map_width = map[l()].
 					getProperties().get("width", Integer.class);
 			scrollCam( tiles_per_cam_width );
@@ -155,7 +144,6 @@ public class Level {
 	}
 	
 	/** Scrolls the screen from delta time and scroll speed.
-	 * 
 	 * @param dt delta time
 	 * @param scroll_speed The speed to scroll by
 	 * @return whether a new map was loaded
@@ -185,8 +173,7 @@ public class Level {
 		return collision[map_no][index];
 	}
 	
-	/** Gets the ocllision type for the current tile, from a point
-	 * 
+	/** Gets the collision type for the current tile, from a point
 	 * @param point The point containing the x and y position
 	 * @return The collision type of the tile gotten by x and y
 	 */
@@ -195,7 +182,6 @@ public class Level {
 	}
 	
 	/** Gets the scroll from the left map.
-	 * 
 	 * @return Level.left_map_scroll
 	 */
 	public float getScroll()
@@ -204,7 +190,6 @@ public class Level {
 	}
 	
 	/** Gets the total scroll amount
-	 * 
 	 * @return Level.total_scroll
 	 */
 	public float getTotalScroll()
@@ -213,31 +198,35 @@ public class Level {
 	}
 	
 	/** Gets the total amount of maps scrolled
-	 * 
 	 * @return total_maps
 	 */
 	public int getTotalMaps() {
 		return total_maps;
 	}
 	
-	/**
-	 * 
-	 * @return
+	/** Returns the level width based on both map widths
+	 * @return Level width
 	 */
 	public int levelWidth() {
 		return left_map_width + 
 				map[r()].getProperties().get("width", Integer.class);
 	}
 	
+	/** Returns the level height baed on map 0's height
+	 * @return Level height
+	 */
 	public int levelHeight() {
-		return LEVEL_HEIGHT;
+		return map[0].getProperties().get("height", Integer.class);
 	}
 	
+	/** Returns the width of the left map
+	 * @return Left map width
+	 */
 	public int leftMapWidth() {
 		return left_map_width;
 	}
 	
-	/** 
+	/** Draws the map.
 	 * Should be called immediately after clearing screen 
 	 */
 	public void draw() {
@@ -247,6 +236,11 @@ public class Level {
 		}
 	}
 	
+	/** Gets the enemies from the newly loaded map
+	 * @param texture_region The list of textures
+	 * @param tiles_per_cam_height The amount of tiles displayed on the screen at once
+	 * @return an ArrayList containing the enemies
+	 */
 	public ArrayList<Enemy> getnewEnemies(TextureRegion[][][] texture_region,
 			int tiles_per_cam_height ) {
 		MapObjects objects = map[r()].getLayers().get(1).getObjects();
@@ -254,7 +248,7 @@ public class Level {
 		for( MapObject object : objects ) {
 			int x = object.getProperties().get("x", Float.class).intValue()/16+
 					left_map_width;
-			int y = tiles_per_cam_height-
+			int y = tiles_per_cam_height-2-
 					object.getProperties().get("y", Float.class).intValue()/16;
 			switch( object.getProperties().get("e", "0", String.class) ) {
 			case "0":
@@ -280,7 +274,6 @@ public class Level {
 				break;
 			}
 		}
-		return enemies;
-		
+		return enemies;		
 	}
 }

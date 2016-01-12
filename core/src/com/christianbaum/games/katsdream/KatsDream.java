@@ -22,9 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.christianbaum.games.katsdream.Actor.State;
 
 /** The main LibGDX method for the game.
- * 
  * @author Christian
- *
  */
 public class KatsDream extends ApplicationAdapter {
 	private Level l;
@@ -203,7 +201,7 @@ public class KatsDream extends ApplicationAdapter {
 			while( enem_iter.hasNext() ) {
 				Enemy enemy = enem_iter.next();
 				enemy.update(dt);
-				enemy.isOutOfBounds( l.getScroll()+l.leftMapWidth(),
+				enemy.isOutOfBounds( l.getScroll()+tiles_per_cam_width,
 						tiles_per_cam_width, tiles_per_cam_height, sfx);
 				if( enemy.isColliding( p ) )
 					p.notifyOfCollision();
