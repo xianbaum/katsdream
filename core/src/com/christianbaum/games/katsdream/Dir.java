@@ -10,7 +10,7 @@ public enum Dir {
 	UP(1),
 	DOWN(2),
 	RIGHT(3),
-	NO(4);
+	NO(2);
 	/** Corrospondant integer for the enum. Useful for sprite sheet. */
 	private int index;
 	
@@ -50,12 +50,26 @@ public enum Dir {
 		return DOWN;
 	}
 	
+	public Dir opposite() {
+		switch( this ){
+		case UP:
+			return DOWN;
+		case DOWN:
+			return UP;
+		case LEFT:
+			return RIGHT;
+		case RIGHT:
+			return LEFT;
+		default:
+			return NO;
+		}
+	}
 	/** Converts an index number to a dir
 	 * 
 	 * @param index The index number. See the index numbers above.
 	 * @return The Dir gotten from the index numbers
 	 */
-	public static Dir getDirFromIndex( int index ) {
+	public static Dir fromIndex( int index ) {
 	switch (index) {
 	case 0:
 		return LEFT;

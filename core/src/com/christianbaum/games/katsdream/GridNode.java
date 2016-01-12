@@ -9,9 +9,11 @@ import java.util.LinkedList;
  *
  */
 public class GridNode extends Point {
-	/** The x/y position */
-	/** The amount of attempts. Used to determine the next dir. */
+	/** The amount of attempts. Used to determine the next dir. *//*
 	private int attempts;
+	private Dir last_dir;
+	private boolean[] traversable;*/
+	
 	/** This function 
 	 * Collision type 1 is impassible.
 	 * 
@@ -20,107 +22,43 @@ public class GridNode extends Point {
 	 */
 	GridNode( Point pos ) {
 		super( pos );
-		attempts = 0;
+		/*attempts = 0;
+		last_dir = Dir.NO;
+		traversable = new boolean[4];*/
 	}
 	
 	GridNode( float x, float y ) {
 		super( x, y );
-		attempts = 0;
+		/*attempts = 0;
+		last_dir = Dir.NO;
+		traversable = new boolean[4];*/
 	}
 	
 	/** Gets the next point to traverse in the direction.
-	 * Yikes, this is a bloated function.
 	 * @param current Current point
 	 * @param dest Destination point
 	 * @param map Level (to test if a part can be traversed or not)
-	 * TODO: unbloat
 	 * @return The next point
-	 */
+	current_dir */
 	private GridNode next_point ( Point dest, Level map,
 			boolean traversed[][]) {
-		Dir current_dir = Dir.NO;
-		Point next_point = null;
-		if( x() > dest.x() ) {
-			if( y( )<= dest.y() ) {
-			do {
-				current_dir = Dir.getDirFromIndex( attempts);
-				attempts++;
-				next_point=canTraverse(current_dir, map, traversed);
-			} while ( next_point== null && attempts < 4);
-			}
-			else {
-				if( y() > dest.y()) {
-					do {
-						if( attempts == 0)
-							current_dir = Dir.LEFT;
-						else if( attempts == 1 )
-							current_dir = Dir.DOWN;
-						else if(attempts == 2 )
-							current_dir = Dir.UP;
-						else if( attempts == 3 )
-							current_dir = Dir.RIGHT;
-						attempts++;
-						next_point = canTraverse(current_dir, map, traversed);
-					} while ( next_point == null && attempts < 4);
-				}
-			}
-		}
-		else if( x() == dest.x()) {
-			if( y() > dest.y()) {
-				do {
-					if( attempts == 0)
-						current_dir = Dir.DOWN;
-					else if( attempts == 1 )
-						current_dir = Dir.LEFT;
-					else if(attempts == 2 )
-						current_dir = Dir.RIGHT;
-					else if( attempts == 3 )
-						current_dir = Dir.UP;
-					attempts++;
-					next_point = canTraverse(current_dir, map, traversed);
-				} while ( next_point == null && attempts < 4);
-			}
-			else {
-				do {
-					if( attempts == 0)
-						current_dir = Dir.UP;
-					else if( attempts == 1 )
-						current_dir = Dir.LEFT;
-					else if(attempts == 2 )
-						current_dir = Dir.RIGHT;
-					else if( attempts == 3 )
-						current_dir = Dir.DOWN;
-					attempts++;
-					next_point = canTraverse(current_dir, map, traversed);
-				} while ( next_point == null && attempts < 4);
-			}
-		}
-		else {
-			if( y()<dest.y()) {
-				if( y()>dest.y()) {
-					do {
-						if( attempts == 0)
-							current_dir = Dir.RIGHT;
-						else if( attempts == 1 )
-							current_dir = Dir.UP;
-						else if(attempts == 2 )
-							current_dir = Dir.DOWN;
-						else if( attempts == 3 )
-							current_dir = Dir.LEFT;
-						attempts++;
-						next_point = canTraverse(current_dir, map, traversed);
-					} while ( next_point == null && attempts < 4);
-				}
-				else {
-					do {
-						current_dir = Dir.getDirFromIndex( 3-attempts);
-						attempts++;
-						next_point = canTraverse(current_dir, map, traversed);
-					} while ( next_point == null || attempts < 4 );
-				}
-			}
-		}
-		return new GridNode(next_point);
+		if( dest.y() > y &&
+			canTraverse( dirToPoint( Dir.DOWN ),
+					this, map, traversed))
+			return new GridNode(dirToPoint( Dir.DOWN));
+		else if( dest.y < y &&
+				canTraverse( dirToPoint( Dir.UP ),
+						this, map, traversed))
+			return new GridNode( dirToPoint(Dir.UP));
+		else if( dest.x < x &&
+				canTraverse( dirToPoint( Dir.LEFT ),
+				this, map, traversed))
+			return new GridNode( dirToPoint(Dir.LEFT));
+		else if( dest.x > x && 
+				canTraverse( dirToPoint( Dir.RIGHT),
+				this, map, traversed))
+			return new GridNode( dirToPoint(Dir.RIGHT));
+		return null;
 	}
 	
 	/** Subtracts the left_map_width from the location x and destination x.
@@ -140,66 +78,45 @@ public class GridNode extends Point {
 	 * @return
 	 */
 	
-	//TODO: take traversed into account
-	private Point canTraverse(Dir direction, Level map, boolean traversed[][]) {
-		switch (direction) {
-		case LEFT:
-			return map.getCollisionType( (int)x() - 1, (int)y() ) 
-			== 1 && traversed[(int) ( x()-1)][(int) y()] &&
-			 x() == 0 ? null : new Point( x()-1, y() );
-		case UP:
-			return map.getCollisionType( (int) x(), (int) y()-1) 
-			== 1 && traversed[(int) x()][(int) ( y()-1)] &&
-			 y() == 0 ? null : new Point( x(), y()-1 );
-		case DOWN:
-			return map.getCollisionType( (int) x(), (int) y()+1) 
-			== 1 && traversed[(int) x()][(int) ( y()+1)] &&
-			 y() != 15 ? null : new Point( x(), y()+1);
-		case RIGHT:
-			return map.getCollisionType( (int) x()+1, (int) y()) 
-			!= 1 && !traversed[(int) ( x()+1)][(int) y()] &&
-			 x() != map.levelWidth()?
-					new Point( x()+1, y()) : null;
-		default:
-			return null;
-		}
-	}
-	
 	public static boolean canTraverse( 
 			Point point, Point player_pos, Level map, boolean traversed[][]) {
 		if( player_pos.equals( point.x(), point.y() - 1 ) ||
 			player_pos.equals( point.x(), point.y() + 1 ) || 
 			player_pos.equals( point.x() - 1, point.y() ) ||
 			player_pos.equals( point.x() + 1, point.y() ) )
-			return map.getCollisionType( point ) != 1 && 
-			!traversed[ (int)point.x() ][ (int) point.y() ];
+			return map.getCollisionType( point ) != 1; 
+//			!traversed[ (int)point.x() ][ (int) point.y() ];
 		return false;
 	}
 
-	//TODO: This
 	public static Deque<GridNode> findPath( Point start, Point end, Level map) {
-		boolean traversed[][] = new boolean[ map.levelWidth() ][ 15 ];
-		Deque<GridNode> path = new LinkedList<GridNode>();
+		boolean traversed[][]     = new boolean[ map.levelWidth()+1 ][ 16 ];
+		Deque<GridNode> path      = new LinkedList<GridNode>();
 		GridNode current_gridnode = new GridNode( start );
 		GridNode next_gridnode;
-		traversed[ (int)current_gridnode.x() ]
-				[(int)current_gridnode.y()] = true;
 		int passes=0;
 		do{
-			traversed[ (int)current_gridnode.x() ]
-					[(int)current_gridnode.y()] = true;
+			if( current_gridnode.x() < 0 ||
+				current_gridnode.y() < 0 ||
+				current_gridnode.x() > map.levelWidth()  ||
+				current_gridnode.y() > map.levelHeight() ||
+				current_gridnode.equals( end ))
+				return path;
+			//traversed[ (int)current_gridnode.x() ]
+			//		[(int)current_gridnode.y()] = true;
 			next_gridnode = current_gridnode.next_point( end, map, traversed);
-			if( next_gridnode != null) {
-				path.addFirst( current_gridnode );
-				current_gridnode = next_gridnode;
+			if( next_gridnode != null ) {
+				path.add( next_gridnode );
+				//current_gridnode.attempts = 0;
+				current_gridnode = new GridNode(next_gridnode);
 			}
 			else {
-				path.remove(current_gridnode);
+				//current_gridnode.attempts++;
 				if( !path.isEmpty())
 					current_gridnode = path.removeLast();
 			}
 			passes++;
-		} while (!path.isEmpty() && passes < 15);
+		} while (!path.isEmpty() && passes < 10);
 		return path;
 	}
 	
@@ -235,3 +152,4 @@ public class GridNode extends Point {
 	}
 	
 }
+ 

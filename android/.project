@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Kat&apos;s Dream-android</name>
+	<name>KatsDream-android</name>
 	<comment>Project Kat&apos;s Dream-android created by Buildship.</comment>
 	<projects>
 	</projects>
@@ -21,6 +21,11 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
+			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>com.android.ide.eclipse.adt.ApkBuilder</name>
 			<arguments>
 			</arguments>
@@ -28,11 +33,12 @@
 	</buildSpec>
 	<natures>
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
+		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1449513048509</id>
+			<id>0</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
@@ -41,7 +47,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1449513048511</id>
+			<id>0</id>
 			<name></name>
 			<type>26</type>
 			<matcher>

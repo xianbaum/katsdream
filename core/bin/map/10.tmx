@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="15" tilewidth="16" tileheight="16" nextobjectid="36">
+ <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="32">
+  <image source="tiles.png" width="128" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="col" value="1"/>
+    <property name="die" value=""/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="col" value="1"/>
+   </properties>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="col" value="0"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="40" height="15">
+  <data encoding="base64" compression="zlib">
+   eJwTZmBgkCEDC9MZD3b3kerGgXAfPfw5mN020G6kZfqgVv4YDG4jZAct4nYolC+jeGThwZz+BnP+GEz5FwBFiDF1
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="8" gid="20" x="608" y="176" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="9" gid="20" x="544" y="192" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="10" gid="20" x="480" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="11" gid="20" x="608" y="96" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="13" gid="20" x="576" y="48" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="14" gid="20" x="240" y="96" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="15" gid="20" x="176" y="192" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="16" gid="20" x="352" y="192" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="17" gid="20" x="352" y="208" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="18" gid="20" x="352" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="19" gid="20" x="352" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="20" gid="20" x="336" y="208" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="21" gid="20" x="336" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="22" gid="20" x="336" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="23" gid="20" x="320" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="25" gid="20" x="320" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="26" gid="20" x="304" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="27" gid="20" x="496" y="16" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="28" gid="20" x="368" y="208" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="29" gid="20" x="368" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="30" gid="20" x="368" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="31" gid="20" x="384" y="224" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="32" gid="20" x="384" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="33" gid="20" x="400" y="240" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="34" gid="20" x="112" y="192" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+  <object id="35" gid="20" x="160" y="96" width="16" height="16">
+   <properties>
+    <property name="e" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

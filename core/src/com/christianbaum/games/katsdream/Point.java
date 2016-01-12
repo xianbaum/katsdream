@@ -8,9 +8,9 @@ package com.christianbaum.games.katsdream;
  */
 public class Point {
 	/** THe x point */
-	private float x;
+	protected float x;
 	/** The y point */
-	private float y;
+	protected float y;
 	
 	/** Creates a point with an X and Y value.
 	 * 
@@ -25,6 +25,21 @@ public class Point {
 	Point( Point point ) {
 		this.x = point.x();
 		this.y = point.y();
+	}
+	
+	public Point dirToPoint(Dir direction ) {
+		switch (direction) {
+		case LEFT:
+			return new Point( x()-1, y() );
+		case UP:
+			return new Point( x(), y()-1 );
+		case DOWN:
+			return  new Point( x(), y()+1);
+		case RIGHT:
+			return new Point( x()+1, y());
+		default:
+			return null;
+		}
 	}
 		
 	/** Gets the X value

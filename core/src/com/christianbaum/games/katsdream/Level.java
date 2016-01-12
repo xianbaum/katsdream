@@ -1,7 +1,6 @@
 package com.christianbaum.games.katsdream;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -48,9 +47,8 @@ public class Level {
 		left_map_width = 20;
 		left_map = 0;
 		collision = new int[2][];
-		//TODO: Correct map numbers?
 		_load(0,0);
-		_load(1,0);
+		_load(1,1);
 		for(int i=0; i<2; i++) {
 			camera[i]= new OrthographicCamera();
 			camera[i].setToOrtho(false, tiles_per_cam_width, 
@@ -96,20 +94,21 @@ public class Level {
 	 */
 	private void _load(int map_no, int level) {
         map[map_no] = new TmxMapLoader(new InternalFileHandleResolver()).
-        		load("assets/map/"+level+".tmx");
+        		load("map/"+level+".tmx");
        	renderer[map_no] = new OrthogonalTiledMapRenderer(map[map_no], 1/16f);
        	TiledMapTileLayer layer = (TiledMapTileLayer) 
        			map[map_no].getLayers().get(0);
        	int width = map[map_no].getProperties().get("width", Integer.class);
        	collision[map_no] = new int[width*15];
        	for(int x=0; x<width; x++)
-       		for(int y=0; y<15; y++)
-       			collision[map_no][x*15+y] = (layer.getCell(x, y).getTile().
-       					getProperties().get( "col" , Integer.class) != null) 
-       					? 0 : Integer.parseInt(layer.getCell(x, y).getTile().
-       							getProperties().get( "col" , String.class));
+       		for(int y=0; y<15; y++) {
+       			collision[map_no][x*15+y] = (layer.getCell(x, 14-y).getTile().
+       					getProperties().get( "col" , Integer.class) == null) 
+       					? 0 : Integer.parseInt( layer.getCell(x, 14-y).getTile().
+       						getProperties().get( "col" , String.class));
+       		}
 	}
-	
+
 	//Public methods
 	
 	/** Gets the total scroll amount
@@ -139,11 +138,11 @@ public class Level {
 			total_maps++;
 			map[l()].dispose();
 			left_map = r();
-			//TODO: This is not 2.
+			int random_map = (int)Math.round(2+Math.random()*14);
 			if( left_map == 1 )
-				_load(r(), 0);
+				_load(r(), random_map );
 			else 
-				_load(r(), 0 );
+				_load(r(), random_map );
 			int left_map_width_return = left_map_width;
 	        left_map_scroll -= left_map_width;
 			left_map_width = map[l()].
@@ -180,6 +179,9 @@ public class Level {
 			map_no = r();
 			index -= left_map_width*15;
 		}
+		if(x < 0 || x > levelWidth() ||
+		   y < 0 || y > levelWidth() )
+			return 1;
 		return collision[map_no][index];
 	}
 	
@@ -245,23 +247,40 @@ public class Level {
 		}
 	}
 	
-	//TODO: More actors
-	public ArrayList<Actor> getnewEnemies(TextureRegion[][][] texture_region ) {
+	public ArrayList<Enemy> getnewEnemies(TextureRegion[][][] texture_region,
+			int tiles_per_cam_height ) {
 		MapObjects objects = map[r()].getLayers().get(1).getObjects();
-		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		for( MapObject object : objects ) {
-			int x = object.getProperties().get("x", Float.class).intValue()/16;
-			int y = object.getProperties().get("y", Float.class).intValue()/16;
-//			object.getProperties().
-			switch( object.getProperties().get("e", 0, Integer.class) ) {
-			case 0:
-				actors.add( new Cart( x, y, texture_region[6], false ) );
+			int x = object.getProperties().get("x", Float.class).intValue()/16+
+					left_map_width;
+			int y = tiles_per_cam_height-
+					object.getProperties().get("y", Float.class).intValue()/16;
+			switch( object.getProperties().get("e", "0", String.class) ) {
+			case "0":
+				enemies.add( new Cart( x, y, texture_region[6], false ) );
 				break;
-			case 1:
-				actors.add( new Cart( x, y, texture_region[6], true ));
+			case "1":
+				enemies.add( new Cart( x, y, texture_region[6], true ) );
+				break;
+			case "2":
+				enemies.add( new Slug( x, y, 2));
+				break;
+			case "3":
+				enemies.add( new Slug( x, y, 3));
+				break;
+			case "4":
+				enemies.add( new Slug( x, y, 4));
+				break;
+			case "5":
+				enemies.add( new Slug( x, y, 5));
+				break;
+			case "6":
+				enemies.add( new Plane( x, y));
+				break;
 			}
 		}
-		return actors;
+		return enemies;
 		
 	}
 }
