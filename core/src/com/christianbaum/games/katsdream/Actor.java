@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /** An Actor is a superclass skeleton
- * 
  * @author Christian
- *
  */
 public abstract class Actor {
 	/** The actual position of the player */

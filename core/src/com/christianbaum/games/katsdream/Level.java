@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
  * @author Christian
  */
 public class Level {
+	/** The maps for each level. Must be at at least as large as the screen */
 	private TiledMap[] map = new TiledMap[2];
 	/** Two OrthogonalTiledMapRenderers for each map */
 	private OrthogonalTiledMapRenderer[] renderer
@@ -133,7 +134,6 @@ public class Level {
 				_load(r(), random_map );
 			int left_map_width_return = left_map_width;
 	        left_map_scroll -= left_map_width;
-	        System.out.println("LMS:"+left_map_scroll);
 			left_map_width = map[l()].
 					getProperties().get("width", Integer.class);
 			scrollCam( tiles_per_cam_width );

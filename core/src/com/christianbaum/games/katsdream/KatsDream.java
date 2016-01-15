@@ -2,7 +2,6 @@ package com.christianbaum.games.katsdream;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -40,7 +39,7 @@ public class KatsDream extends ApplicationAdapter {
 	private GameState state;
 	private FitViewport viewport;
 	private OrthographicCamera sprite_camera;
-	private ArrayList<Bullet> bullets;;
+	private ArrayList<Bullet> bullets;
 	private ArrayList<Enemy> enemies;
 	private boolean traversed[][];
 	private TextureRegion[] traversed_frames;
@@ -58,6 +57,7 @@ public class KatsDream extends ApplicationAdapter {
 	private Music music;
 	private int level_num;
 	private Sound[] sfx;
+
 	@Override
 	public void create () {
 		
@@ -125,7 +125,6 @@ public class KatsDream extends ApplicationAdapter {
 			dt = 1;
 		game_timer += dt;
 		
-		
 		//Updating input
 		arrows[0] = Gdx.input.isKeyJustPressed(Keys.LEFT);
 		arrows[1] = Gdx.input.isKeyJustPressed(Keys.UP);
@@ -186,7 +185,6 @@ public class KatsDream extends ApplicationAdapter {
 				p.isOutOfBounds(l.getScroll() );
 			}
 			Iterator<Bullet> bull_iter = bullets.iterator();
-			
 			while( bull_iter.hasNext() ) {
 				Bullet bullet = bull_iter.next();
 				bullet.update( dt );
@@ -195,9 +193,7 @@ public class KatsDream extends ApplicationAdapter {
 				if(bullet.okayToDelete())
 					bull_iter.remove();
 			}
-			
-			Iterator<Enemy> enem_iter = enemies.iterator();
-			
+			Iterator<Enemy> enem_iter = enemies.iterator();	
 			while( enem_iter.hasNext() ) {
 				Enemy enemy = enem_iter.next();
 				enemy.update(dt);
@@ -211,7 +207,6 @@ public class KatsDream extends ApplicationAdapter {
 				if( enemy.okayToDelete() )
 					enem_iter.remove();
 			}
-			
 			try {
 				if ( traversed[ (int) p.tilePos().x() ][ (int) p.tilePos().y()])
 					traversed[ (int)p.tilePos().x() ]
@@ -420,6 +415,7 @@ public class KatsDream extends ApplicationAdapter {
 			music.play();
 		}
 	}
+
 	void disposeMusic() {
 		music.stop();
 		music.dispose();
