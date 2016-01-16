@@ -10,12 +10,12 @@ public enum Dir {
 	UP(1),
 	DOWN(2),
 	RIGHT(3),
-	NO(2);
+	NO(4);
+
 	/** Corrospondant integer for the enum. Useful for sprite sheet. */
 	private int index;
 	
 	/** Constructor for Dir. All it does is sets an index.
-	 * 
 	 * @param index The index number.
 	 */
 	private Dir( int index ) {

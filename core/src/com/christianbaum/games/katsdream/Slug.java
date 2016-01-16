@@ -1,7 +1,8 @@
 package com.christianbaum.games.katsdream;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Slug extends Enemy {
 	
@@ -16,25 +17,23 @@ public class Slug extends Enemy {
 	}
 	
 	@Override
-	public void update( float dt ) {
+	public void update( float dt, KatsDream world,
+			ArrayList<Actor> actors_to_add) {
 		if( state == State.MOVING )
-			super.update( dt );
+			super.update( dt, world, actors_to_add );
 		else if (state == State.DEAD)
 			anim_timer+=dt/2;
-	}
-	
-	@Override
-	public Bullet updateAI(float dt, Player player, Level level, 
-			TextureRegion[][] region ) {
+		Actor p = world.actors.get(0);
 		if( state == State.MOVING) {
 			if( enemy_num == 4 || enemy_num == 5)
-				updatePathFromTarget(dt, level, randomDest());
+				updatePathFromTarget(dt, world.l, randomDest());
 			else
-				updatePathFromTarget(dt, level, player.tilePos());
+				updatePathFromTarget(dt, world.l, p.tilePos());
 			if( enemy_num % 2 == 1  && canShoot( false ) )
-				return new Bullet( pos, player.tilePos(), 2, false, region);
+				actors_to_add.add( new Bullet( pos, p.pos(),
+						2, false, world.texture_region[0]));
 		}
-		return null;
+		updateEnemy( world );
 	}
 	
 	@Override
@@ -47,13 +46,10 @@ public class Slug extends Enemy {
 	}
 	
 	@Override
-	public void draw(Batch batch, TextureRegion[][] texture_region, 
-			float left_screen_scroll, int cam_width, int cam_height,
-			int tiles_per_cam_width, int tiles_per_cam_height ) {
+	public void draw(Batch batch, KatsDream world ) {
 		if( updateDirection() || state == State.DEAD && !dead_sprite_set)
-			updateWalkFrames( texture_region );
-		super.draw(batch, texture_region, left_screen_scroll, 
-				cam_width, cam_height,tiles_per_cam_width,tiles_per_cam_height);
+			updateWalkFrames( world.texture_region[enemy_num] );
+		super.draw(batch, world);
 	}
 	
 	@Override

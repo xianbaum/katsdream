@@ -41,6 +41,16 @@ public class Point {
 			return null;
 		}
 	}
+	
+	public Dir pointToDir( Point point ) {
+		if( point.y > y )
+			return Dir.DOWN;
+		else if( point.y < y )
+			return Dir.UP;
+		else if( point.x > x)
+			return Dir.RIGHT;
+		return Dir.LEFT;
+	}
 		
 	/** Gets the X value
 	 * 

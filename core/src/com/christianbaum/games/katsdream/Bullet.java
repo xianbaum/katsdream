@@ -2,9 +2,7 @@ package com.christianbaum.games.katsdream;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -15,24 +13,24 @@ public class Bullet extends Actor {
 	Bullet(float x1, float y1, float x2, float y2, float speed,
 			boolean player_bullet, TextureRegion[][] texture_region) {
 		super(x1, y1);
-		initializeMovementVector( new Point( x1, y1 ), new Point( x2, y2 ), 
-				speed );
+		setMovementVector( new Vect( new Point( x1, y1 ), 
+				                     new Point( x2, y2 ), speed ));
 		this.player_bullet = player_bullet;
 		initializeTexture( texture_region );
 		hitbox_size = new Rectangle( 0f, 0f, 0.5f, 0.5f );
+		state = State.MOVING;
+		drawbox = new Point(0.5f, 0.5f);
 	}
 
 	Bullet(Point loc, Point dest, float speed, 
 			boolean player_bullet, TextureRegion[][] texture_region ) {
 		super(loc);
-		initializeMovementVector( loc, dest, speed );
+		setMovementVector( new Vect( loc, dest, speed ) );
 		this.player_bullet = player_bullet;
 		initializeTexture( texture_region );
 		hitbox_size = new Rectangle( 0f, 0f, 0.5f, 0.5f );
-	}
-	
-	private void initializeMovementVector(Point loc, Point dest, float speed ) {
-		setMovementVector( new Vect( loc, dest, speed ) );
+		state = State.MOVING;
+		drawbox = new Point(0.5f, 0.5f);
 	}
 	
 	private void initializeTexture( TextureRegion[][] texture_region ) {
@@ -44,53 +42,39 @@ public class Bullet extends Actor {
 		anim = new Animation( 0.05f, walk_frames );
 	}
 
-	public boolean isColliding( Player player, ArrayList<Enemy> enemies, 
-			float scroll, int tiles_per_cam_width, int tiles_per_cam_height, Sound [] sfx) {
-		if( hitbox().x < 0-(hitbox().width/16) || pos().x() > tiles_per_cam_width + scroll || 
-			hitbox().y < 0-(hitbox().height/16) || pos().y() > tiles_per_cam_height ) {
+	public boolean isColliding( KatsDream w ) {
+		if( hitbox().x < 0-(hitbox().width/16) || pos().x() > w.tiles_per_cam_width + w.l.getScroll() || 
+			hitbox().y < 0-(hitbox().height/16) || pos().y() > w.tiles_per_cam_height ) {
 			setState(State.DEAD);
 			return true;
 		}
-		
-		if( hitbox().overlaps( player.hitbox() ) && !player_bullet ) {
-			player.notifyOfCollision();
-			setState(State.DEAD);
-			return true;
-		}
-		
-		for( Actor  enemy : enemies )
-			if( player_bullet )
-				if ( hitbox().overlaps(enemy.hitbox() ) &&
-						enemy.state != State.DEAD) {
-					if( enemy.getClass() == Cart.class )
-						sfx[5].play();
+		for( Actor  actor : w.actors )
+			if ( hitbox().overlaps(actor.hitbox() ) &&
+				actor.state != State.DEAD &&
+				actor.getClass() != Bullet.class)
+				if(  player_bullet && actor.getClass() != Player.class ||
+					!player_bullet && actor.getClass() == Player.class) {
+					if( actor.getClass() == Cart.class )
+						w.sfx[5].play();
 					else
-						sfx[(int) (1+Math.round(Math.random()))].play();
+						w.sfx[(int) (1+Math.round(Math.random()))].play();
 					setState( State.DEAD );
-					enemy.notifyOfCollision();
+					actor.notifyOfCollision();
 					return true;
 				}
 		return false;
 	}
 	
+	@Override
 	public boolean okayToDelete() {
 		return state() == State.DEAD;
 	}
 	
-	public void update( float dt ) {
-		super.update( dt );
+	@Override
+	public void update( float dt, KatsDream w, ArrayList<Actor> actors_to_add ) {
+		super.update( dt, w, actors_to_add );
 		super.move( dt );
-	}
-	
-	public void draw(Batch batch, float left_screen_scroll, 
-			int cam_width, int cam_height, int tiles_per_cam_width,
-			int tiles_per_cam_height ) {
-		batch.draw( anim.getKeyFrame( anim_timer, true),
-				pos.x()*cam_width/tiles_per_cam_width -
-				left_screen_scroll * cam_width/tiles_per_cam_width,
-				cam_height - (pos.y() + 1) * cam_height/tiles_per_cam_height,
-				cam_width/tiles_per_cam_width/2, cam_height/tiles_per_cam_height/2);
-
+		isColliding( w );
 	}
 
 	@Override

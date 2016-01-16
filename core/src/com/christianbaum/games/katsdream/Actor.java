@@ -3,8 +3,6 @@ package com.christianbaum.games.katsdream;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
-
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,6 +28,8 @@ public abstract class Actor {
 	protected float anim_timer;
 	/** The size of the hitbox for the actor */
 	protected Rectangle hitbox_size;
+	/** The size of the drawing; x=width, y=height */
+	protected Point drawbox;
 	/** The enum for the actor state */
 	protected enum State { STANDING, MOVING, DEAD, INACTIVE } ;
 	/** The current state of the actor */
@@ -40,8 +40,6 @@ public abstract class Actor {
 	protected int health;
 	/** The speed that the actor will move */
 	protected float speed;
-	/** Whether or not the actor has collided or not */
-	protected boolean notified_of_collision;
 	/** The amount of time the actor has to wait to fire another bullet*/
 	private float bullet_timer;
 	/** The amount of time before the actor can take damage again */
@@ -64,6 +62,7 @@ public abstract class Actor {
 		speed = 2;
 		movement_vector = new Vect( new Point(x,y), new Point(x,y), 0 );
 		hitbox_size = new Rectangle( 0f, 0f, 1f, 1f );
+		drawbox = new Point(1,1);
 	}
 	
 	Actor( Point point ) {
@@ -86,14 +85,13 @@ public abstract class Actor {
 		tile_pos = new Point( movement_vector.loc() );
 	}
 	
-	public void draw(Batch batch, TextureRegion[][] texture_region, 
-			float left_screen_scroll, int cam_width, int cam_height,
-			int tiles_per_cam_width, int tiles_per_cam_height ) {
-		batch.draw(getCurrentFrame( texture_region ), 
-				pos.x()*cam_width/tiles_per_cam_width -
-				left_screen_scroll * cam_width/tiles_per_cam_width,
-				cam_height - (pos.y() + 1) * cam_height/tiles_per_cam_height,
-				cam_width/tiles_per_cam_width, cam_height/tiles_per_cam_height);
+	public void draw(Batch batch, KatsDream w ) {
+		batch.draw(getCurrentFrame( w.texture_region[getTextureRegion()] ), 
+				pos.x()*w.cam_width/w.tiles_per_cam_width -
+				w.l.getScroll() * w.cam_width/w.tiles_per_cam_width,
+				w.cam_height - (pos.y() + 1) * w.cam_height/w.tiles_per_cam_height,
+				(w.cam_width/w.tiles_per_cam_width)*drawbox.x,
+				(w.cam_height/w.tiles_per_cam_height)*drawbox.y);
 	}
 	
 	protected void updateXFromMapChange( int left_map_width ) {
@@ -185,32 +183,8 @@ public abstract class Actor {
 	}
 	
 	
-	public boolean isColliding( Player player ) {
+	public boolean isColliding( Actor player ) {
 		return !(state == State.DEAD) && player.hitbox().overlaps( hitbox() );
-	}
-	
-	/**
-	 * Checks if the actor is outside of the screen or not.
-	 * @param scroll
-	 * @param tiles_per_cam_height
-	 * @return True if out of bounds (does it need to be boolean?)
-	 */
-	protected boolean isOutOfBounds( float left_screen_scroll,
-			int tiles_per_cam_width, int tiles_per_cam_height,
-			Sound[] sfx) {
-		if( state == State.INACTIVE)
-			if( tile_pos.x() < 
-				left_screen_scroll ) {
-				state = State.MOVING;
-				if( getClass() == Plane.class )
-					sfx[4].play();
-			}
-		else if( pos.x() < -1 || pos.y() > tiles_per_cam_height ||
-			pos.y() < -1 ) {
-			state = State.DEAD;
-			return true;
-		}
-		return false;
 	}
 	
 	public Point pos() {
@@ -222,10 +196,10 @@ public abstract class Actor {
 				Math.round(tile_pos.y()) );
 	}
 
-	protected void update( float dt ) {
+	protected void update( float dt, KatsDream world,
+			ArrayList<Actor> actors_to_add ) {
 		anim_timer += dt;
 		bullet_timer += dt;
-		notified_of_collision = false;
 	}
 
 	public State state() {
@@ -259,10 +233,6 @@ public abstract class Actor {
 		return path.isEmpty() && movement_vector.arrived();
 	}
 	
-	public void addToPath( GridNode node ) {
-		path.add( node );
-	}
-	
 	protected void setMovementVector( Vect new_mv )  {
 		movement_vector = new_mv;
 	}
@@ -286,13 +256,7 @@ public abstract class Actor {
 		bullet_timer = 0;
 	}
 	
-	public void notifyOfCollision() {
-		notified_of_collision = true;
-	}
-	
-	public boolean  notifiedOfCollision() {
-		return notified_of_collision;
-	}
+	public abstract void notifyOfCollision();
 	
 	public boolean canShoot( boolean cool_level ) {
 		return false;

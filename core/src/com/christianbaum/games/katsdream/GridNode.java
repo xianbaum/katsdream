@@ -3,16 +3,16 @@ package com.christianbaum.games.katsdream;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /** A structure that contains the position, and whether it can travel
  * up, down, left, or right.
  * @author Christian Baum
  *
  */
 public class GridNode extends Point {
-	/** The amount of attempts. Used to determine the next dir. *//*
-	private int attempts;
-	private Dir last_dir;
-	private boolean[] traversable;*/
+	public Dir lastdir;
+	public  Dir dir;
 	
 	/** This function 
 	 * Collision type 1 is impassible.
@@ -22,16 +22,14 @@ public class GridNode extends Point {
 	 */
 	GridNode( Point pos ) {
 		super( pos );
-		/*attempts = 0;
-		last_dir = Dir.NO;
-		traversable = new boolean[4];*/
+		lastdir = Dir.NO;
+		dir = Dir.NO;
 	}
 	
 	GridNode( float x, float y ) {
 		super( x, y );
-		/*attempts = 0;
-		last_dir = Dir.NO;
-		traversable = new boolean[4];*/
+		lastdir = Dir.NO;
+		dir = Dir.NO;
 	}
 	
 	/** Gets the next point to traverse in the direction.
@@ -40,23 +38,18 @@ public class GridNode extends Point {
 	 * @param map Level (to test if a part can be traversed or not)
 	 * @return The next point
 	current_dir */
-	private GridNode next_point ( Point dest, Level map,
-			boolean traversed[][]) {
+	private GridNode next_point ( Point dest, Level map ) {
 		if( dest.y() > y &&
-			canTraverse( dirToPoint( Dir.DOWN ),
-					this, map, traversed))
+			canTraverse( dirToPoint( Dir.DOWN ), this, map))
 			return new GridNode(dirToPoint( Dir.DOWN));
 		else if( dest.y < y &&
-				canTraverse( dirToPoint( Dir.UP ),
-						this, map, traversed))
+				canTraverse( dirToPoint( Dir.UP ), this, map))
 			return new GridNode( dirToPoint(Dir.UP));
 		else if( dest.x < x &&
-				canTraverse( dirToPoint( Dir.LEFT ),
-				this, map, traversed))
+				canTraverse( dirToPoint( Dir.LEFT ), this, map))
 			return new GridNode( dirToPoint(Dir.LEFT));
 		else if( dest.x > x && 
-				canTraverse( dirToPoint( Dir.RIGHT),
-				this, map, traversed))
+				canTraverse( dirToPoint( Dir.RIGHT), this, map))
 			return new GridNode( dirToPoint(Dir.RIGHT));
 		return null;
 	}
@@ -69,28 +62,64 @@ public class GridNode extends Point {
 		setX( x() - left_screen_width );
 	}
 	
-	/** Uses a silly depth-first search to find a path to the player.
-	 * 
+	/** Checks if the terrain is blocked or not
 	 * 
 	 * @param start The point to start from
 	 * @param end The destination of the path
 	 * @param map The map
 	 * @return
 	 */
-	
 	public static boolean canTraverse( 
-			Point point, Point player_pos, Level map, boolean traversed[][]) {
+			Point point, Point player_pos, Level map ) {
 		if( player_pos.equals( point.x(), point.y() - 1 ) ||
 			player_pos.equals( point.x(), point.y() + 1 ) || 
-			player_pos.equals( point.x() - 1, point.y() ) ||
-			player_pos.equals( point.x() + 1, point.y() ) )
+			player_pos.equals( point.x() + 1, point.y() ) ||
+			player_pos.equals( point.x() - 1, point.y() ) )
 			return map.getCollisionType( point ) != 1; 
-//			!traversed[ (int)point.x() ][ (int) point.y() ];
 		return false;
+	}
+	
+	public TextureRegion getTexture( TextureRegion texture[][]) {
+		int indexV = lastdir.index();
+		int indexH = dir.index();
+		if( indexH == 0 && indexV == 1 ||
+			indexH == 1 && indexV == 3 ||
+			indexH == 2 && indexV == 0 ||
+			indexH == 3 && indexV == 2) {
+			int temp = indexH;
+			indexH = indexV;
+			indexV = temp;
+		}
+		else if( indexV == 4 ) {
+			switch( indexH ) {
+			case 0:
+				indexH = 2;
+				indexV = 0;
+				break;
+			case 1:
+				indexH = 1;
+				indexV = 3;
+				break;
+			case 2:
+				indexH = 0;
+				indexV = 1;
+				break;
+			case 3:
+				indexH = 3;
+				indexV = 2;
+				break;
+			default:
+				indexH = 3;
+				indexV = 2;
+			}
+		}
+		else if( indexH == 4 ) {
+			indexV = indexH =  3 - indexV;
+		}
+		return texture[indexV][indexH];
 	}
 
 	public static Deque<GridNode> findPath( Point start, Point end, Level map) {
-		boolean traversed[][]     = new boolean[ map.levelWidth()+1 ][ 16 ];
 		Deque<GridNode> path      = new LinkedList<GridNode>();
 		GridNode current_gridnode = new GridNode( start );
 		GridNode next_gridnode;
@@ -102,9 +131,7 @@ public class GridNode extends Point {
 				current_gridnode.y() > map.levelHeight() ||
 				current_gridnode.equals( end ))
 				return path;
-			//traversed[ (int)current_gridnode.x() ]
-			//		[(int)current_gridnode.y()] = true;
-			next_gridnode = current_gridnode.next_point( end, map, traversed);
+			next_gridnode = current_gridnode.next_point( end, map );
 			if( next_gridnode != null ) {
 				path.add( next_gridnode );
 				//current_gridnode.attempts = 0;
@@ -149,6 +176,14 @@ public class GridNode extends Point {
 			new_path.add( node );
 		}
 		return new_path;
+	}
+	
+	public void setLastDir( Dir lastdir) {
+		this.lastdir = lastdir;
+	}
+	
+	public void setDir( Dir dir) {
+		this.dir = dir;
 	}
 	
 }

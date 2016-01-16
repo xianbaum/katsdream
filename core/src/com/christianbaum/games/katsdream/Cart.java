@@ -1,5 +1,7 @@
 package com.christianbaum.games.katsdream;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,15 +33,12 @@ public class Cart extends Enemy {
 	}
 	
 	@Override
-	public void draw(Batch batch, TextureRegion[][] texture_region, 
-			float left_screen_scroll, int cam_width, int cam_height,
-			int tiles_per_cam_width, int tiles_per_cam_height ) {
+	public void draw(Batch batch, KatsDream world) {
 		if( has_changed_sprite ) {
-			updateFrames( texture_region );
+			updateFrames( world.texture_region[6] );
 			has_changed_sprite = false;
 		}
-		super.draw(batch, texture_region, left_screen_scroll, cam_width,
-				cam_height, tiles_per_cam_width, tiles_per_cam_height);
+		super.draw(batch, world );
 	}
 	
 	private void updateFrames( TextureRegion[][] texture_region ) {
@@ -52,21 +51,16 @@ public class Cart extends Enemy {
 		anim = new Animation( 0.1f, walk_frames);
 	}
 	
-	public void update( float dt ) {
+	@Override
+	public void update( float dt , KatsDream world, ArrayList<Actor> actors_to_add ) {
 		if( state() == State.MOVING ) {
 			anim_timer += dt * (is_angry ? 1: 0.5);
 			super.move( dt );
 		}
+		updateEnemy( world );
 	}
 	
 	public int getTextureRegion() {
 		return 6;
-	}
-
-	@Override
-	public Bullet updateAI(float dt, Player player, Level l,
-			TextureRegion[][] region) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
