@@ -50,6 +50,10 @@ public enum Dir {
 		return DOWN;
 	}
 	
+	/** Returns the opposite direction of this one
+	 * 
+	 * @return The opposite of up, down, left or right
+	 */
 	public Dir opposite() {
 		switch( this ){
 		case UP:
@@ -64,23 +68,24 @@ public enum Dir {
 			return NO;
 		}
 	}
+	
 	/** Converts an index number to a dir
 	 * 
 	 * @param index The index number. See the index numbers above.
 	 * @return The Dir gotten from the index numbers
 	 */
 	public static Dir fromIndex( int index ) {
-	switch (index) {
-	case 0:
-		return LEFT;
-	case 1:
-		return UP;
-	case 2:
-		return DOWN;
-	case 3:
-		return RIGHT;
-	default:
-		return NO;
+		switch (index) {
+		case 0:
+			return LEFT;
+		case 1:
+			return UP;
+		case 2:
+			return DOWN;
+		case 3:
+			return RIGHT;
+		default:
+			return NO;
 		}
 	}
 }

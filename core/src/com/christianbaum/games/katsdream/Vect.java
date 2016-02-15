@@ -43,7 +43,7 @@ public class Vect {
 	}
 	
 	Vect( Point start, Point dest, float speed ) {
-		this( start.x(), start.y(), dest.x(), dest.y(), speed );
+		this( start.x, start.y, dest.x, dest.y, speed );
 	}
 	
 	private double sqrn( double num ) {
@@ -62,7 +62,7 @@ public class Vect {
 	 * @return The instance of Vect.loc.x
 	 */
 	public float x(){
-		return loc.x();
+		return loc.x;
 	}
 	
 	/** Gets the current y value
@@ -70,7 +70,7 @@ public class Vect {
 	 * @return Vect.loc.y from the instance
 	 */
 	public float y() {
-		return loc.y();
+		return loc.y;
 	}
 	
 	/** Gets the current Point
@@ -99,13 +99,13 @@ public class Vect {
 	 * @param dt Delta time
 	 */
 	public void move( float dt ) {
-		loc.setX( loc.x() + x_spd*dt);
-		loc.setY( loc.y() + y_spd*dt);
+		loc.x += x_spd*dt;
+		loc.y += y_spd*dt;
 		if( !arrived ) {
-			if( x_spd > 0 && loc.x() >= dest.x() ||
-					y_spd > 0 && loc.y() >= dest.y() ||
-					x_spd < 0 && loc.x() <= dest.x() ||
-					y_spd < 0 && loc.y() <= dest.y() ||
+			if( x_spd > 0 && loc.x >= dest.x ||
+					y_spd > 0 && loc.y >= dest.y ||
+					x_spd < 0 && loc.x <= dest.x ||
+					y_spd < 0 && loc.y <= dest.y ||
 					y_spd == 0 && x_spd == 0 ||
 					loc.equals( dest )) {
 				arrived = true;

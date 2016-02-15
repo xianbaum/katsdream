@@ -8,30 +8,31 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.christianbaum.games.katsdream.KatsDream.GameState;
 
 public class Plane extends Enemy {
-
+	//The plane's y velocity
 	float velocity;
-	int sprite_state;
-	
+	//The
+	boolean is_facing_up;
+
 	Plane (float x, float y)
 	{
 		super (x, y);
 		state = State.INACTIVE;
 		dead_sprite_set = false;
-		sprite_state = 1;
+		is_facing_up = true;
 	}
-	
+
 	@Override
 	public void update( float dt, KatsDream w,
 			ArrayList<Actor> actors_to_add ) {
 		if( state == State.MOVING && w.state != GameState.DRAWING) {
-			pos.setX( pos.x() - 7*dt );
-			pos.setY( pos.y() + velocity );
+			pos.x -= 7*dt;
+			pos.y += velocity;
 		}
 		else
 			anim_timer+=dt/2;
 		Actor p = w.actors.get(0);
 		if( state == State.MOVING ) {
-			if( p.pos.y() > pos.y() )
+			if( p.pos.y > pos.y )
 				velocity += 0.2*dt;
 			else
 				velocity -= 0.2*dt;
@@ -48,24 +49,24 @@ public class Plane extends Enemy {
 	@Override
 	public void draw(Batch batch, KatsDream world) {
 		if( state == State.MOVING  ) {
-			if ( velocity < 0 && sprite_state != 1 ) {
+			if ( velocity < 0 && !is_facing_up  ) {
 				TextureRegion[] frame = new TextureRegion[1];
 				frame[0] = world.texture_region[6][3][1];
 				anim = new Animation(1, frame);
-				sprite_state = 1;
+				is_facing_up = true;
 			}
-			else if ( velocity >= 0 && sprite_state != 2 ) {
+			else if ( velocity >= 0 && is_facing_up ) {
 				TextureRegion[] frame = new TextureRegion[1];
 				frame[0] = world.texture_region[6][3][2];
 				anim = new Animation(1, frame);
-				sprite_state = 2;
+				is_facing_up = false;
 			}
 			super.draw(batch, world);
 		}
 		else if (state == State.DEAD) {
 			if( !dead_sprite_set ) {
 				TextureRegion[] walk_frames = new TextureRegion[4];
-				for(int i=0; i < 3; i++) {
+				for(int i=0; i < 4; i++) {
 					walk_frames[i] = world.texture_region[6][i][0];
 				}
 				anim = new Animation( 0.1f, walk_frames);
@@ -91,6 +92,6 @@ public class Plane extends Enemy {
 	
 	@Override
 	public boolean okayToDelete() {
-		return state == State.DEAD && anim_timer > 0.30f ? true : false;
+		return state == State.DEAD && anim_timer > 0.5f;
 	}
 }

@@ -10,6 +10,7 @@ public class Cart extends Enemy {
 
 	boolean is_angry;
 	boolean has_changed_sprite;
+	final int texture_num = 6;
 	
 	Cart(float x, float y, TextureRegion[][] texture, boolean hard_flag ) {
 		super(x, y);
@@ -19,15 +20,15 @@ public class Cart extends Enemy {
 		float speed = 1.5f;
 		if( is_angry )
 			speed = 3f;
-		setMovementVector(new Vect(new Point(x,y), new Point( -1,y ), speed ));
-		setState( State.INACTIVE );
+		movement_vector = new Vect(new Point(x,y), new Point( -1,y ), speed );
+		state = State.INACTIVE;
 	}
 	
 	@Override
 	public void notifyOfCollision() {
 		if(!is_angry) {
 			has_changed_sprite = true;
-			setMovementVector(new Vect(new Point(pos().x(),pos().y()), new Point( -1,pos().y() ), 3f ));
+			movement_vector = new Vect(new Point(pos.x,pos.y), new Point( -1,pos.y ), 3f );
 			is_angry = true;
 		}
 	}
@@ -53,9 +54,9 @@ public class Cart extends Enemy {
 	
 	@Override
 	public void update( float dt , KatsDream world, ArrayList<Actor> actors_to_add ) {
-		if( state() == State.MOVING ) {
+		if( state == State.MOVING ) {
 			anim_timer += dt * (is_angry ? 1: 0.5);
-			super.move( dt );
+			move( dt );
 		}
 		updateEnemy( world );
 	}

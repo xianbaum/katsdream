@@ -130,7 +130,7 @@ public class Level {
 			int random_map = (int)Math.round(2+Math.random()*14);
 			if( left_map == 1 )
 				_load(r(), random_map );
-			else 
+			else //for later
 				_load(r(), random_map );
 			int left_map_width_return = left_map_width;
 	        left_map_scroll -= left_map_width;
@@ -167,8 +167,10 @@ public class Level {
 			map_no = r();
 			index -= left_map_width*15;
 		}
-		if(x < 0 || x > levelWidth() ||
-		   y < 0 || y > levelWidth() )
+		//If it's out of bounds, it is not traversable.
+		if(x < 0 || x >= levelWidth() ||
+		   y < 0 || y >= levelHeight() ||
+		   index >= collision[map_no].length )
 			return 1;
 		return collision[map_no][index];
 	}
@@ -178,7 +180,7 @@ public class Level {
 	 * @return The collision type of the tile gotten by x and y
 	 */
 	public int getCollisionType( Point point ) {
-		return getCollisionType( (int)point.x(), (int)point.y() );
+		return getCollisionType( (int)point.x, (int)point.y );
 	}
 	
 	/** Gets the scroll from the left map.
@@ -271,6 +273,9 @@ public class Level {
 				break;
 			case "6":
 				enemies.add( new Plane( x, y));
+				break;
+			case "7":
+				enemies.add( new Bomb( x, y));
 				break;
 			}
 		}

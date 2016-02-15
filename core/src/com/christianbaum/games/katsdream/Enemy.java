@@ -1,37 +1,19 @@
 package com.christianbaum.games.katsdream;
 
-import java.util.ArrayList;
-
 public abstract class Enemy extends Actor {
-	
-	Enemy(Point pos) {
-		super(pos);
-	}
 
+	/** Initializes the enemy
+	 * @param x THe x coordinate
+	 * @param y The Y coordinate
+	 */
 	Enemy(float x, float y) {
 		super(x, y);
 	}
 	
 	@Override
-	public void update( float dt, KatsDream w,
-			ArrayList<Actor> actors_to_add ) {
-		super.update(dt, w, actors_to_add);
-	}
-	
-	protected void updatePathFromTarget(float dt, Level level, Point target) {
-		if( path.isEmpty() || !path_target.equals( target )) {
-			path_target = target;
-			findPath(path_target, level);
-		}
-		else {
-			followPath( dt );
-		}
-	}
-	
-	@Override
 	protected boolean okayToDelete( ) {
 		return state == State.DEAD && anim_timer > 1
-				|| tile_pos.x() < 0 ;
+				|| tilePos().x < 0 ;
 		
 	}
 	
@@ -43,14 +25,16 @@ public abstract class Enemy extends Actor {
 	 */
 	protected void updateEnemy( KatsDream w ) {
 		if( state == State.INACTIVE && 
-			tile_pos.x() < w.l.getScroll() + w.tiles_per_cam_width ) {
+			tilePos().x < w.l.getScroll() + w.tiles_per_cam_width ) {
 				state = State.MOVING;
 		}
-		else if( pos.x() < -1 || pos.y() > w.tiles_per_cam_height ||
-			pos.y() < -1 ) {
+		else if( pos.x < w.l.getScroll() -1 || pos.y > w.tiles_per_cam_height ||
+			pos.y < -1 ) {
 			state = State.DEAD;
 		}
-		if( isColliding( w.actors.get(0) ) )
+		if( w.state == KatsDream.GameState.PLAYING && 
+				state != State.DEAD && 
+				w.actors.get(0).hitbox().overlaps( hitbox()) )
 			w.actors.get(0).notifyOfCollision();
 	}
 }

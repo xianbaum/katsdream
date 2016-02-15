@@ -14,34 +14,47 @@ public class Point {
 	
 	/** Creates a point with an X and Y value.
 	 * 
-	 * @param _x The X value to set
-	 * @param _y The Y value to set
+	 * @param x The X value to set
+	 * @param y The Y value to set
 	 */
-	Point(float _x, float _y) {
-		this.x = _x;
-		this.y = _y;
+	Point(float x, float y) {
+		this.x = x;
+		this.y = y;
 	}
 	
+	/** Copy constructor for Point
+	 * 
+	 * @param point point to copy
+	 */
 	Point( Point point ) {
-		this.x = point.x();
-		this.y = point.y();
+		this( point.x, point.y );
 	}
 	
+	/** Turns a direction to one whole point up, down, left or right
+	 * 
+	 * @param direction The direction
+	 * @return a Point in the direction
+	 */
 	public Point dirToPoint(Dir direction ) {
 		switch (direction) {
 		case LEFT:
-			return new Point( x()-1, y() );
+			return new Point( x-1, y );
 		case UP:
-			return new Point( x(), y()-1 );
+			return new Point( x, y-1 );
 		case DOWN:
-			return  new Point( x(), y()+1);
+			return  new Point( x, y+1);
 		case RIGHT:
-			return new Point( x()+1, y());
+			return new Point( x+1, y);
 		default:
 			return null;
 		}
 	}
 	
+	/** Returns a point in the direction of the point
+	 * 
+	 * @param point The point to turn into a direction
+	 * @return The Direction gotten from the point
+	 */
 	public Dir pointToDir( Point point ) {
 		if( point.y > y )
 			return Dir.DOWN;
@@ -51,46 +64,24 @@ public class Point {
 			return Dir.RIGHT;
 		return Dir.LEFT;
 	}
-		
-	/** Gets the X value
-	 * 
-	 * @return The instance's x value
-	 */
-	public float x() {
-		return x;
-	}
-	
-	/** Gets the Y value.
-	 * 
-	 * @return THe instance's y value
-	 */
-	public float y() {
-		return y;
-	}
-	
-	/** Sets the instance's x value
-	 * 
-	 * @param _x	The X value to set to
-	 */
-	public void setX( float _x ) {
-		this.x = _x;
-	}
-	/** Sets the instance's y value
-	 * 
-	 * @param _y The Y value to set to/
-	 */
-	public void setY( float _y) {
-		this.y = _y;
-	}
-	
+
 	/** Compares the X and Y values of both the the "this" point and the other 
 	 * point to see whether or not they are the same value.
 	 * 
 	 * @param other_point The point to compare the object to.
 	 * @return True if the X and Y values are identical. False if they are not.
 	 */
-	public boolean equals( Point other_point ) {
-		return ( other_point.x() == x() && other_point.y() == y() );
+	@Override
+	public boolean equals( Object o ) {
+	    if (o == null || !(o instanceof Point)) {
+	        return false;
+	    }
+		return ( ((Point)o).x == x && ((Point)o).y == y );
+	}
+	
+	@Override
+	public int hashCode() {
+		return 59 + 73 + (int)x + (int)y;
 	}
 	
 	public boolean equals( float x, float y ) {
@@ -100,4 +91,7 @@ public class Point {
 	public void updateXFromMapChange( int level_width ) {
 		x -= level_width;
 	}
+	
+
+	
 }

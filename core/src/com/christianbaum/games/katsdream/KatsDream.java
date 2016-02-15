@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.christianbaum.games.katsdream.Actor.State;
 
 /** The main LibGDX method for the game.
  * @author Christian
@@ -98,13 +97,15 @@ public class KatsDream extends ApplicationAdapter {
 		font.getData().setScale(cam_width/320);
 		
 		//Initializing sounds
-		sfx = new Sound[6];
+		sfx = new Sound[8];
 		sfx[0] = Gdx.audio.newSound( Gdx.files.internal("mfx/shootan.wav"));
 		sfx[1] = Gdx.audio.newSound( Gdx.files.internal("mfx/kill.ogg"));
 		sfx[2] = Gdx.audio.newSound( Gdx.files.internal("mfx/kill2.ogg"));
 		sfx[3] = Gdx.audio.newSound( Gdx.files.internal("mfx/die.ogg"));
 		sfx[4] = Gdx.audio.newSound( Gdx.files.internal("mfx/launch.ogg"));
 		sfx[5] = Gdx.audio.newSound( Gdx.files.internal("mfx/dingan.wav"));
+		sfx[6] = Gdx.audio.newSound( Gdx.files.internal("mfx/beep.wav"));
+		sfx[7] = Gdx.audio.newSound( Gdx.files.internal("mfx/explosion.ogg"));
 		//Initializing game
 		state = GameState.MENU;
 		level_num = 1;
@@ -143,9 +144,16 @@ public class KatsDream extends ApplicationAdapter {
 				actor.update(dt, this, actors_to_add);
 				if( actor.okayToDelete() )
 					actor_iter.remove();
+				if( state == GameState.PLAYING && actor.isExploding() ) {
+					sfx[7].play();
+					game_timer = 0;
+					disposeMusic();
+					for( Actor actor2 : actors )
+						actor2.kill();
+				}
 			}
 			actors.addAll(actors_to_add);
-			if( state == GameState.PLAYING && actors.get(0).state() == State.DEAD ) {
+			if( state == GameState.PLAYING && ((Player)actors.get(0)).isDead() ) {
 				state = GameState.GAMEOVER;
 				sfx[3].play();
 				game_timer = 0;
@@ -191,7 +199,7 @@ public class KatsDream extends ApplicationAdapter {
 					5*cam_height/tiles_per_cam_height,
 					16*cam_width/tiles_per_cam_width,
 					8*cam_height/tiles_per_cam_height);
-			font.draw( batch, "Touch to begin!\nv0.10", cam_width/tiles_per_cam_width*6f,
+			font.draw( batch, "Touch to begin!\nv1.10", cam_width/tiles_per_cam_width*6f,
 					cam_height/tiles_per_cam_height*3);
 			batch.end();
 		}
@@ -220,7 +228,7 @@ public class KatsDream extends ApplicationAdapter {
 				Gdx.input.isTouched();
 		click_pos = new Point ( Gdx.input.getX() , Gdx.input.getY() );
 		Vector2 projection = viewport.unproject(
-				new Vector2 ( click_pos.x(), click_pos.y() ) );
+				new Vector2 ( click_pos.x, click_pos.y ) );
 		float scroll = 0, width = 15, height = 20;
 		if( state == GameState.PLAYING ||
 			state == GameState.DRAWING ||
@@ -229,18 +237,18 @@ public class KatsDream extends ApplicationAdapter {
 			width = l.levelWidth();
 			height = l.levelHeight();
 		}
-		click_pos.setX( projection.x + scroll );
-		click_pos.setY( tiles_per_cam_height - projection.y - 1 ) ;
-		if( click_pos.x() < 0 )
-			click_pos.setX( 0 );
-		else if( click_pos.x() > width )
-			click_pos.setX( width );
-		if( click_pos.y() < 0 )
-			click_pos.setY( 0 );
-		else if( click_pos.y() > height)
-			click_pos.setY( height);
-		click_tile_pos.setX( (int) click_pos.x() );
-		click_tile_pos.setY( (int) Math.ceil( click_pos.y() ) );
+		click_pos.x = projection.x + scroll;
+		click_pos.y = tiles_per_cam_height - projection.y - 1;
+		if( click_pos.x < 0 )
+			click_pos.x = 0;
+		else if( click_pos.x > width )
+			click_pos.x = width;
+		if( click_pos.y < 0 )
+			click_pos.y = 0;
+		else if( click_pos.y > height)
+			click_pos.y = height;
+		click_tile_pos.x = (int) click_pos.x;
+		click_tile_pos.y = (float) Math.ceil( click_pos.y);
 		
 		//Checking input
 		if(Gdx.input.isKeyJustPressed(Keys.LEFT))
@@ -288,13 +296,11 @@ public class KatsDream extends ApplicationAdapter {
 		l = new Level( tiles_per_cam_width, tiles_per_cam_height );
 		actors = new ArrayList<Actor>();
 		actors.add(new Player(6,5, texture_region[1], this ));
-		actors.get(0);
 		has_advanced = false;
 		state = GameState.PLAYING;
 		l.scroll(1, 0, cam_width);
 		score = 0;
 		game_timer = 0;
-		music_initialized = false;
 		disposeMusic();
 	}
 	
